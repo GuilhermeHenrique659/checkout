@@ -1,11 +1,16 @@
 package com.example.checkout.shared.queue;
 
 import com.example.checkout.shared.domain.Event;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConditionalOnProperty(
+        name = "app.queue.provider",
+        havingValue = "kafka"
+)
 public class KafkaQueue implements Queue {
     private final KafkaTemplate<String, Object> kafka;
     private final ConcurrentKafkaListenerContainerFactory<String, Object> factory;
