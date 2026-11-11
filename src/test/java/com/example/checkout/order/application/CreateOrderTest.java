@@ -4,7 +4,7 @@ import com.example.checkout.order.domain.OrderCreated;
 import com.example.checkout.order.domain.Product;
 import com.example.checkout.order.infrastructure.persistence.FakeOrderRepository;
 import com.example.checkout.order.infrastructure.persistence.FakeProductRepository;
-import com.example.checkout.shared.FakeQueue;
+import com.example.checkout.shared.FakePublisher;
 import com.example.checkout.shared.domain.ApplicationError;
 import com.example.checkout.shared.domain.Event;
 import org.junit.jupiter.api.Assertions;
@@ -21,9 +21,9 @@ class CreateOrderTest {
         var product1Id = UUID.randomUUID();
         var product2Id = UUID.randomUUID();
         var orderRepo = new FakeOrderRepository(List.of());
-        var queue = new FakeQueue();
+        var queue = new FakePublisher();
         var received = new ArrayList<Event>();
-        queue.subscriber(OrderCreated.class, received::add);
+        queue.subscribe(OrderCreated.class, received::add);
 
         var createOrder = new CreateOrder(
                 orderRepo,
@@ -52,9 +52,9 @@ class CreateOrderTest {
         var product1Id = UUID.randomUUID();
         var product2Id = UUID.randomUUID();
         var orderRepo = new FakeOrderRepository(List.of());
-        var queue = new FakeQueue();
+        var queue = new FakePublisher();
         var received = new ArrayList<Event>();
-        queue.subscriber(OrderCreated.class, received::add);
+        queue.subscribe(OrderCreated.class, received::add);
 
         var createOrder = new CreateOrder(
                 orderRepo,

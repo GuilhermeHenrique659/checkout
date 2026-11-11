@@ -2,7 +2,7 @@ package com.example.checkout.order.application;
 
 import com.example.checkout.order.domain.*;
 import com.example.checkout.shared.domain.ApplicationError;
-import com.example.checkout.shared.queue.Queue;
+import com.example.checkout.shared.infrastructure.queue.Publisher;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
@@ -12,14 +12,14 @@ import java.util.stream.Collectors;
 @Service
 public class CreateOrder {
 
-    private final Queue queue;
+    private final Publisher publisher;
     private final OrderRepository orderRepo;
     private final ProductRepository productRepo;
 
-    public CreateOrder(OrderRepository orderRepo, ProductRepository productRepo, Queue queue) {
+    public CreateOrder(OrderRepository orderRepo, ProductRepository productRepo, Publisher publisher) {
         this.orderRepo = orderRepo;
         this.productRepo = productRepo;
-        this.queue = queue;
+        this.publisher = publisher;
     }
 
     public CreateOrderOutput execute(CreateOrderInput input) {
@@ -51,7 +51,7 @@ public class CreateOrder {
 
         orderRepo.save(order);
 
-        queue.publish(new OrderCreated(order.id()));
+        publisher.publish(new OrderCreated(order.id()));
 
         return new CreateOrderOutput(order.id(), order.status());
     }
