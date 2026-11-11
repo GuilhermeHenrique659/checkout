@@ -1,7 +1,8 @@
 package com.example.checkout.order.application;
 
-import com.example.checkout.order.domain.OrderCreated;
+import com.example.checkout.order.application.dto.CreateOrderInput;
 import com.example.checkout.order.domain.Product;
+import com.example.checkout.order.domain.event.OrderCreated;
 import com.example.checkout.order.infrastructure.persistence.FakeOrderRepository;
 import com.example.checkout.order.infrastructure.persistence.FakeProductRepository;
 import com.example.checkout.shared.FakePublisher;

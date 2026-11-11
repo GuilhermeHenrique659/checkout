@@ -1,4 +1,4 @@
-package com.example.checkout.order.application;
+package com.example.checkout.order.application.dto;
 
 import java.util.UUID;
 

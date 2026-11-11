@@ -7,5 +7,7 @@ import java.util.UUID;
 
 public interface OrderDao extends JpaRepository<OrderModel, UUID> {
     List<OrderModel> queryByCustomerId(UUID customerId);
+
+    List<OrderModel> id(UUID id);
 }
 

@@ -1,8 +1,12 @@
 package com.example.checkout.order.infrastructure.persistence;
 
 import com.example.checkout.order.domain.Order;
+import com.example.checkout.order.domain.OrderItem;
 import com.example.checkout.order.domain.OrderRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class JPAOrderRepository implements OrderRepository {
@@ -24,7 +28,26 @@ public class JPAOrderRepository implements OrderRepository {
                 .toList();
 
         orderItemDao.saveAll((orderItems));
-        
+
         return order;
+    }
+
+    @Override
+    public Optional<Order> getById(UUID id) {
+        var orderModel = orderDao.findById(id);
+
+        if (orderModel.isEmpty()) return Optional.empty();
+
+        var orderItems = orderItemDao.findAllByOrderId(id).stream()
+                .map(data -> new OrderItem(data.getProductId(), data.getQuantity(), data.getPrice()))
+                .toList();
+
+        return Optional.of(new Order(
+                orderModel.get().getId(),
+                orderModel.get().getCustomerId(),
+                orderItems,
+                orderModel.get().getStatus(),
+                orderModel.get().getTotal()
+        ));
     }
 }

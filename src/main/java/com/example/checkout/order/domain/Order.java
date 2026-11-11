@@ -1,7 +1,11 @@
 package com.example.checkout.order.domain;
 
+import com.example.checkout.order.domain.event.OrderCanceled;
+import com.example.checkout.order.domain.event.OrderPaid;
 import com.example.checkout.shared.domain.DomainError;
+import com.example.checkout.shared.domain.Event;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +16,8 @@ public class Order {
     private final List<OrderItem> items;
     private String status;
     private final Integer total;
+
+    private final List<Event> events = new ArrayList<>();
 
     public Order(UUID id, UUID customerId, List<OrderItem> items, String status, Integer total) {
         this.id = id;
@@ -51,12 +57,23 @@ public class Order {
         return total;
     }
 
+    public List<Event> events() {
+        return List.copyOf(events);
+    }
+
     //TODO: ADD STATE MACHINE
     public void changeStatus(String newStatus) {
         switch (status) {
             case "PENDING" -> {
-                if (newStatus.equals("PAID") || newStatus.equals("CANCEL")) {
+                if (newStatus.equals("CANCEL")) {
                     status = newStatus;
+                    events.add(new OrderCanceled(id));
+                    break;
+                }
+
+                if (newStatus.equals("PAID")) {
+                    status = newStatus;
+                    events.add(new OrderPaid(id));
                     break;
                 }
 

@@ -3,7 +3,7 @@ package com.example.checkout.order.api;
 import com.example.checkout.order.api.dto.CreateOrderRequest;
 import com.example.checkout.order.api.dto.CreateOrderResponse;
 import com.example.checkout.order.application.CreateOrder;
-import com.example.checkout.order.application.CreateOrderInput;
+import com.example.checkout.order.application.dto.CreateOrderInput;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

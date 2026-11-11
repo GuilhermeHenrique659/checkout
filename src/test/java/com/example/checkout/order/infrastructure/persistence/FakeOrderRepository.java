@@ -28,4 +28,9 @@ public class FakeOrderRepository implements OrderRepository {
     public Order save(Order order) {
         return orders.put(order.id(), order);
     }
+
+    @Override
+    public Optional<Order> getById(UUID id) {
+        return Optional.of(orders.get(id));
+    }
 }
