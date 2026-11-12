@@ -3,7 +3,7 @@ package com.example.checkout.order.api;
 import com.example.checkout.order.api.dto.CreateOrderRequest;
 import com.example.checkout.order.api.dto.CreateOrderResponse;
 import com.example.checkout.order.application.CreateOrder;
-import com.example.checkout.order.application.dto.CreateOrderInput;
+import com.example.checkout.order.application.dto.CreateOrderDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +20,9 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CreateOrderResponse createOrder(@RequestBody @Valid CreateOrderRequest request) {
-        var output = createOrder.execute(new CreateOrderInput(
+        var output = createOrder.execute(new CreateOrderDTO.Input(
                 request.customerId(),
-                request.items().stream().map(item -> new CreateOrderInput.OrderItem(
+                request.items().stream().map(item -> new CreateOrderDTO.Input.OrderItem(
                         item.id(),
                         item.quantity()
                 )).toList()

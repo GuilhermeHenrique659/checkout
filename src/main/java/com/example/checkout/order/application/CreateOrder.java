@@ -1,7 +1,6 @@
 package com.example.checkout.order.application;
 
-import com.example.checkout.order.application.dto.CreateOrderInput;
-import com.example.checkout.order.application.dto.CreateOrderOutput;
+import com.example.checkout.order.application.dto.CreateOrderDTO;
 import com.example.checkout.order.domain.*;
 import com.example.checkout.order.domain.event.OrderCreated;
 import com.example.checkout.shared.domain.ApplicationError;
@@ -25,9 +24,9 @@ public class CreateOrder {
         this.publisher = publisher;
     }
 
-    public CreateOrderOutput execute(CreateOrderInput input) {
+    public CreateOrderDTO.Output execute(CreateOrderDTO.Input input) {
         var products = productRepo
-                .valuesByIds(input.items().stream().map(CreateOrderInput.OrderItem::id).toList())
+                .valuesByIds(input.items().stream().map(CreateOrderDTO.Input.OrderItem::id).toList())
                 .stream()
                 .collect(
                         Collectors.toMap(
@@ -56,6 +55,6 @@ public class CreateOrder {
 
         publisher.publish(new OrderCreated(order.id()));
 
-        return new CreateOrderOutput(order.id(), order.status());
+        return new CreateOrderDTO.Output(order.id(), order.status());
     }
 }

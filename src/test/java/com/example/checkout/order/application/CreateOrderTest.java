@@ -1,6 +1,6 @@
 package com.example.checkout.order.application;
 
-import com.example.checkout.order.application.dto.CreateOrderInput;
+import com.example.checkout.order.application.dto.CreateOrderDTO;
 import com.example.checkout.order.domain.Product;
 import com.example.checkout.order.domain.event.OrderCreated;
 import com.example.checkout.order.infrastructure.persistence.FakeOrderRepository;
@@ -35,11 +35,11 @@ class CreateOrderTest {
                 queue
         );
 
-        var output = createOrder.execute(new CreateOrderInput(
+        var output = createOrder.execute(new CreateOrderDTO.Input(
                 UUID.randomUUID(),
                 List.of(
-                        new CreateOrderInput.OrderItem(product1Id, 2),
-                        new CreateOrderInput.OrderItem(product2Id, 3)
+                        new CreateOrderDTO.Input.OrderItem(product1Id, 2),
+                        new CreateOrderDTO.Input.OrderItem(product2Id, 3)
                 )
         ));
 
@@ -66,11 +66,11 @@ class CreateOrderTest {
                 queue
         );
 
-        Assertions.assertThrows(ApplicationError.class, () -> createOrder.execute(new CreateOrderInput(
+        Assertions.assertThrows(ApplicationError.class, () -> createOrder.execute(new CreateOrderDTO.Input(
                 UUID.randomUUID(),
                 List.of(
-                        new CreateOrderInput.OrderItem(UUID.randomUUID(), 2),
-                        new CreateOrderInput.OrderItem(product2Id, 3)
+                        new CreateOrderDTO.Input.OrderItem(UUID.randomUUID(), 2),
+                        new CreateOrderDTO.Input.OrderItem(product2Id, 3)
                 )
         )));
     }

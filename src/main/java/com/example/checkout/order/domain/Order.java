@@ -2,6 +2,7 @@ package com.example.checkout.order.domain;
 
 import com.example.checkout.order.domain.event.OrderCanceled;
 import com.example.checkout.order.domain.event.OrderPaid;
+import com.example.checkout.order.domain.event.OrderPrepared;
 import com.example.checkout.shared.domain.DomainError;
 import com.example.checkout.shared.domain.Event;
 
@@ -80,14 +81,21 @@ public class Order {
                 throw new DomainError("INVALID_STATUS", "The new Status must be PAID or CANCEL");
             }
             case "PAID" -> {
-                if (newStatus.equals("PREPARE") || newStatus.equals("CANCEL")) {
+                if (newStatus.equals("CANCEL")) {
                     status = newStatus;
+                    events.add(new OrderCanceled(id));
                     break;
                 }
 
-                throw new DomainError("INVALID_STATUS", "The new Status must be PREPARE or CANCEL");
+                if (newStatus.equals("PREPARED")) {
+                    status = newStatus;
+                    events.add(new OrderPrepared(id));
+                    break;
+                }
+
+                throw new DomainError("INVALID_STATUS", "The new Status must be PREPARED or CANCEL");
             }
-            case "PREPARE" -> {
+            case "PREPARED" -> {
                 if (newStatus.equals("SHIPPED") || newStatus.equals("CANCEL")) {
                     status = newStatus;
                     break;
