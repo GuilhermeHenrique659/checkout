@@ -67,8 +67,8 @@ public class Order {
         switch (status) {
             case "PENDING" -> {
                 if (newStatus.equals("CANCEL")) {
+                    events.add(new OrderCanceled(id, status));
                     status = newStatus;
-                    events.add(new OrderCanceled(id));
                     break;
                 }
 
@@ -82,8 +82,8 @@ public class Order {
             }
             case "PAID" -> {
                 if (newStatus.equals("CANCEL")) {
+                    events.add(new OrderCanceled(id, status));
                     status = newStatus;
-                    events.add(new OrderCanceled(id));
                     break;
                 }
 

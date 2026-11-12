@@ -12,7 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
 @ConditionalOnProperty(
-        name = "app.queue.provider",
+        name = "app.eventBus.provider",
         havingValue = "spring",
         matchIfMissing = true
 )

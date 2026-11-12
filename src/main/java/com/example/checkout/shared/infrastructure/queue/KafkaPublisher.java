@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(
-        name = "app.queue.provider",
+        name = "app.publisher.provider",
         havingValue = "kafka"
 )
 public class KafkaPublisher implements Publisher {
