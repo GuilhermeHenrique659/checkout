@@ -11,9 +11,9 @@ public class Unit {
 
     private final String sku;
 
-    private String status;
+    private UnitStatus status;
 
-    public Unit(String status, String sku, UUID productId, UUID id) {
+    public Unit(UnitStatus status, String sku, UUID productId, UUID id) {
         this.status = status;
         this.sku = sku;
         this.productId = productId;
@@ -21,7 +21,7 @@ public class Unit {
     }
 
     public static Unit create(UUID productId, String sku) {
-        return new Unit("AVAILABLE", sku, productId, UUID.randomUUID());
+        return new Unit(UnitStatus.AVAILABLE, sku, productId, UUID.randomUUID());
     }
 
     public UUID id() {
@@ -36,13 +36,13 @@ public class Unit {
         return sku;
     }
 
-    public String status() {
+    public UnitStatus status() {
         return status;
     }
 
     public void reserve() {
-        if (!status.equals("AVAILABLE")) throw new DomainError("UNIT_UNAVAILABLE", "Unit not available");
+        if (status != UnitStatus.AVAILABLE) throw new DomainError("UNIT_UNAVAILABLE", "Unit not available");
 
-        status = "RESERVED";
+        status = UnitStatus.RESERVED;
     }
 }

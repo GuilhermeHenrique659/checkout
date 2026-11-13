@@ -15,12 +15,12 @@ public class Order {
     private final UUID id;
     private final UUID customerId;
     private final List<OrderItem> items;
-    private String status;
+    private OrderStatus status;
     private final Integer total;
 
     private final List<Event> events = new ArrayList<>();
 
-    public Order(UUID id, UUID customerId, List<OrderItem> items, String status, Integer total) {
+    public Order(UUID id, UUID customerId, List<OrderItem> items, OrderStatus status, Integer total) {
         this.id = id;
         this.customerId = customerId;
         this.items = items;
@@ -33,7 +33,7 @@ public class Order {
                 UUID.randomUUID(),
                 customerId,
                 items,
-                "PENDING",
+                OrderStatus.PENDING,
                 items.stream().reduce(0, (acc, item) -> acc + item.calculateOderItemTotal(), Integer::sum)
         );
     }
@@ -50,7 +50,7 @@ public class Order {
         return List.copyOf(items);
     }
 
-    public String status() {
+    public OrderStatus status() {
         return status;
     }
 
@@ -63,16 +63,16 @@ public class Order {
     }
 
     //TODO: ADD STATE MACHINE
-    public void changeStatus(String newStatus) {
+    public void changeStatus(OrderStatus newStatus) {
         switch (status) {
-            case "PENDING" -> {
-                if (newStatus.equals("CANCEL")) {
+            case PENDING -> {
+                if (newStatus == OrderStatus.CANCEL) {
                     events.add(new OrderCanceled(id, status));
                     status = newStatus;
                     break;
                 }
 
-                if (newStatus.equals("PAID")) {
+                if (newStatus == OrderStatus.PAID) {
                     status = newStatus;
                     events.add(new OrderPaid(id));
                     break;
@@ -80,14 +80,14 @@ public class Order {
 
                 throw new DomainError("INVALID_STATUS", "The new Status must be PAID or CANCEL");
             }
-            case "PAID" -> {
-                if (newStatus.equals("CANCEL")) {
+            case PAID -> {
+                if (newStatus == OrderStatus.CANCEL) {
                     events.add(new OrderCanceled(id, status));
                     status = newStatus;
                     break;
                 }
 
-                if (newStatus.equals("PREPARED")) {
+                if (newStatus == OrderStatus.PREPARED) {
                     status = newStatus;
                     events.add(new OrderPrepared(id));
                     break;
@@ -95,28 +95,28 @@ public class Order {
 
                 throw new DomainError("INVALID_STATUS", "The new Status must be PREPARED or CANCEL");
             }
-            case "PREPARED" -> {
-                if (newStatus.equals("SHIPPED") || newStatus.equals("CANCEL")) {
+            case PREPARED -> {
+                if (newStatus == OrderStatus.SHIPPED || newStatus == OrderStatus.CANCEL) {
                     status = newStatus;
                     break;
                 }
                 throw new DomainError("INVALID_STATUS", "The new Status must be SHIPPED or CANCEL");
             }
-            case "SHIPPED" -> {
-                if (newStatus.equals("DELIVER") || newStatus.equals("CANCEL")) {
+            case SHIPPED -> {
+                if (newStatus == OrderStatus.DELIVER || newStatus == OrderStatus.CANCEL) {
                     status = newStatus;
                     break;
                 }
                 throw new DomainError("INVALID_STATUS", "The new Status must be DELIVER or CANCEL");
             }
-            case "DELIVER" -> {
-                if (newStatus.equals("CANCEL")) {
+            case DELIVER -> {
+                if (newStatus == OrderStatus.CANCEL) {
                     status = newStatus;
                     break;
                 }
                 throw new DomainError("INVALID_STATUS", "The new Status must be CANCEL");
             }
-            case "CANCEL" -> {
+            case CANCEL -> {
                 throw new DomainError("CANCELED_ORDER", "This order was canceled");
             }
         }

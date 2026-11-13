@@ -1,5 +1,6 @@
 package com.example.checkout.inventory.infrastructure.persistence;
 
+import com.example.checkout.inventory.domain.UnitStatus;
 import com.example.checkout.inventory.domain.Unit;
 import com.example.checkout.inventory.domain.UnitRepository;
 import org.springframework.stereotype.Repository;
@@ -23,7 +24,7 @@ public class JPAUnitRepository implements UnitRepository {
                 unit.id(),
                 unit.productId(),
                 unit.sku(),
-                unit.status()
+                unit.status().name()
         ));
 
         return unit;
@@ -35,19 +36,19 @@ public class JPAUnitRepository implements UnitRepository {
                 unit.id(),
                 unit.productId(),
                 unit.sku(),
-                unit.status()
+                unit.status().name()
         )).toList());
 
         return units;
     }
 
     @Override
-    public List<Unit> getValuesByProductIdAndStatus(Map<UUID, Integer> productIds, String status) {
+    public List<Unit> getValuesByProductIdAndStatus(Map<UUID, Integer> productIds, UnitStatus status) {
         var ids = productIds.keySet().toArray(UUID[]::new);
         var quantities = Arrays.stream(ids).map(productIds::get).toArray(Integer[]::new);
 
-        return unitDao.getAvailable(ids, quantities, status)
-                .stream().map(data -> new Unit(data.getStatus(), data.getSku(), data.getProductId(), data.getId()))
+        return unitDao.getAvailable(ids, quantities, status.name())
+                .stream().map(data -> new Unit(UnitStatus.valueOf(data.getStatus()), data.getSku(), data.getProductId(), data.getId()))
                 .toList();
     }
 }

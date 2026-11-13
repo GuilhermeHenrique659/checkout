@@ -22,7 +22,7 @@ class OrderTest {
 
         Assertions.assertEquals(items, order.items());
         Assertions.assertEquals(customerId, order.customerId());
-        Assertions.assertEquals("PENDING", order.status());
+        Assertions.assertEquals(OrderStatus.PENDING, order.status());
         Assertions.assertEquals(2900, order.total());
     }
 
@@ -37,9 +37,9 @@ class OrderTest {
         var customerId = UUID.randomUUID();
         var order = Order.create(customerId, items);
 
-        order.changeStatus("PAID");
+        order.changeStatus(OrderStatus.PAID);
 
-        Assertions.assertEquals("PAID", order.status());
+        Assertions.assertEquals(OrderStatus.PAID, order.status());
     }
 
     @Test
@@ -53,8 +53,8 @@ class OrderTest {
         var customerId = UUID.randomUUID();
         var order = Order.create(customerId, items);
 
-        order.changeStatus("CANCEL");
+        order.changeStatus(OrderStatus.CANCEL);
 
-        Assertions.assertThrowsExactly(DomainError.class, () -> order.changeStatus("DELIVER"));
+        Assertions.assertThrowsExactly(DomainError.class, () -> order.changeStatus(OrderStatus.DELIVER));
     }
 }

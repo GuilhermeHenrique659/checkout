@@ -1,5 +1,6 @@
 package com.example.checkout.order.application;
 
+import com.example.checkout.order.domain.OrderStatus;
 import com.example.checkout.order.application.dto.ProcessPaymentInput;
 import com.example.checkout.order.domain.Order;
 import com.example.checkout.order.domain.OrderItem;
@@ -43,7 +44,7 @@ class ProcessPaymentTest {
         processPayment.execute(new ProcessPaymentInput(orderToProcess.id()));
 
         var orderProcessed = orderRepo.getById(orderToProcess.id());
-        Assertions.assertEquals("PAID", orderProcessed.orElseThrow().status());
+        Assertions.assertEquals(OrderStatus.PAID, orderProcessed.orElseThrow().status());
         Assertions.assertInstanceOf(OrderPaid.class, fakePublisher.events().getFirst());
     }
 
@@ -73,7 +74,7 @@ class ProcessPaymentTest {
         processPayment.execute(new ProcessPaymentInput(orderToProcess.id()));
 
         var orderProcessed = orderRepo.getById(orderToProcess.id());
-        Assertions.assertEquals("CANCEL", orderProcessed.orElseThrow().status());
+        Assertions.assertEquals(OrderStatus.CANCEL, orderProcessed.orElseThrow().status());
         Assertions.assertInstanceOf(OrderCanceled.class, fakePublisher.events().getFirst());
     }
 
@@ -81,7 +82,7 @@ class ProcessPaymentTest {
     void ShouldIgnoreAlreadyProcessedPayment() {
         var items = List.of(new OrderItem(UUID.randomUUID(), 2, 1050));
         var orderToProcess = Order.create(UUID.randomUUID(), items);
-        var paidOrder = new Order(orderToProcess.id(), orderToProcess.customerId(), orderToProcess.items(), "PAID", orderToProcess.total());
+        var paidOrder = new Order(orderToProcess.id(), orderToProcess.customerId(), orderToProcess.items(), OrderStatus.PAID, orderToProcess.total());
 
         var orderRepo = new FakeOrderRepository(List.of(paidOrder));
         var fakePublisher = new FakePublisher();
@@ -93,7 +94,7 @@ class ProcessPaymentTest {
 
         processPayment.execute(new ProcessPaymentInput(paidOrder.id()));
 
-        Assertions.assertEquals("PAID", orderRepo.getById(paidOrder.id()).orElseThrow().status());
+        Assertions.assertEquals(OrderStatus.PAID, orderRepo.getById(paidOrder.id()).orElseThrow().status());
         Assertions.assertTrue(fakePublisher.events().isEmpty());
     }
 }

@@ -1,5 +1,6 @@
 package com.example.checkout.order.application;
 
+import com.example.checkout.order.domain.OrderStatus;
 import com.example.checkout.order.application.dto.ReserveItemInventoryServiceDTO;
 import com.example.checkout.order.application.dto.ReserveOrderItemDTO;
 import com.example.checkout.order.domain.OrderRepository;
@@ -27,7 +28,7 @@ public class ReserveOrderItem {
         var order = orderRepo.getById(input.orderId())
                 .orElseThrow(() -> new ApplicationError("ORDER_NOT_FOUND", "Order Not Found"));
 
-        order.changeStatus("PREPARED");
+        order.changeStatus(OrderStatus.PREPARED);
 
         var itemsToReserve = order.items().stream()
                 .map(item -> new ReserveItemInventoryServiceDTO.Input.Item(
@@ -45,7 +46,7 @@ public class ReserveOrderItem {
             orderRepo.save(order);
         } catch (RuntimeException e) {
             if (e instanceof ApplicationError || e instanceof DomainError) {
-                order.changeStatus("CANCEL");
+                order.changeStatus(OrderStatus.CANCEL);
                 logger.info("Order cancelled. Reason: {}", e.getMessage());
                 orderRepo.save(order);
             } else {

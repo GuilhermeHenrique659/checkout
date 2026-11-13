@@ -55,6 +55,6 @@ public class CreateOrder {
 
         publisher.publish(new OrderCreated(order.id()));
 
-        return new CreateOrderDTO.Output(order.id(), order.status());
+        return new CreateOrderDTO.Output(order.id(), order.status().name());
     }
 }

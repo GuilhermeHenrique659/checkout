@@ -1,5 +1,6 @@
 package com.example.checkout.inventory.application;
 
+import com.example.checkout.inventory.domain.UnitStatus;
 import com.example.checkout.inventory.application.dto.ReserveProductDTO;
 import com.example.checkout.inventory.domain.Unit;
 import com.example.checkout.inventory.domain.UnitRepository;
@@ -26,7 +27,7 @@ public class ReserveProduct {
                                 ReserveProductDTO.ProductItem::quantity,
                                 Integer::sum
                         )),
-                "AVAILABLE");
+                UnitStatus.AVAILABLE);
 
         for (var product : input.productItems()) {
             var unitsToReserve = units.stream()

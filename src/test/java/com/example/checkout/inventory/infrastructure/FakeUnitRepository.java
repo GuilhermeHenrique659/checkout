@@ -1,5 +1,6 @@
 package com.example.checkout.inventory.infrastructure;
 
+import com.example.checkout.inventory.domain.UnitStatus;
 import com.example.checkout.inventory.domain.Unit;
 import com.example.checkout.inventory.domain.UnitRepository;
 
@@ -25,11 +26,11 @@ public class FakeUnitRepository implements UnitRepository {
     }
 
     @Override
-    public List<Unit> getValuesByProductIdAndStatus(Map<UUID, Integer> productIds, String status) {
+    public List<Unit> getValuesByProductIdAndStatus(Map<UUID, Integer> productIds, UnitStatus status) {
         return units
                 .values()
                 .stream()
-                .filter(unit -> productIds.keySet().stream().toList().contains(unit.productId()) && unit.status().equals(status))
+                .filter(unit -> productIds.keySet().stream().toList().contains(unit.productId()) && unit.status() == status)
                 .toList();
     }
 

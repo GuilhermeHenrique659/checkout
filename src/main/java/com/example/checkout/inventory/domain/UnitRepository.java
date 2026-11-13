@@ -9,5 +9,5 @@ public interface UnitRepository {
 
     List<Unit> saveMany(List<Unit> units);
 
-    List<Unit> getValuesByProductIdAndStatus(Map<UUID, Integer> productIds, String status);
+    List<Unit> getValuesByProductIdAndStatus(Map<UUID, Integer> productIds, UnitStatus status);
 }

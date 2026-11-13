@@ -1,5 +1,6 @@
 package com.example.checkout.order.infrastructure.persistence;
 
+import com.example.checkout.order.domain.OrderStatus;
 import com.example.checkout.order.domain.Order;
 import com.example.checkout.order.domain.OrderItem;
 import com.example.checkout.order.domain.OrderRepository;
@@ -20,7 +21,7 @@ public class JPAOrderRepository implements OrderRepository {
 
     @Override
     public Order save(Order order) {
-        orderDao.save(new OrderModel(order.id(), order.status(), order.customerId(), order.total()));
+        orderDao.save(new OrderModel(order.id(), order.status().name(), order.customerId(), order.total()));
 
         var orderItems = order.items()
                 .stream()
@@ -46,7 +47,7 @@ public class JPAOrderRepository implements OrderRepository {
                 orderModel.get().getId(),
                 orderModel.get().getCustomerId(),
                 orderItems,
-                orderModel.get().getStatus(),
+                OrderStatus.valueOf(orderModel.get().getStatus()),
                 orderModel.get().getTotal()
         ));
     }

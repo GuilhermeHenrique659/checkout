@@ -1,5 +1,6 @@
 package com.example.checkout.inventory.application;
 
+import com.example.checkout.inventory.domain.UnitStatus;
 import com.example.checkout.inventory.application.dto.ReserveProductDTO;
 import com.example.checkout.inventory.domain.Unit;
 import com.example.checkout.inventory.infrastructure.FakeUnitRepository;
@@ -38,7 +39,7 @@ class ReserveProductTest {
                 )
         ));
 
-        var reservedProducts = unitRepository.getValuesByProductIdAndStatus(Map.of(product1Id, 2, product2Id, 2), "RESERVED");
+        var reservedProducts = unitRepository.getValuesByProductIdAndStatus(Map.of(product1Id, 2, product2Id, 2), UnitStatus.RESERVED);
         Assertions.assertEquals(4, reservedProducts.size());
     }
 

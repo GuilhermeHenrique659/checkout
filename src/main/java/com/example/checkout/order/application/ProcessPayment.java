@@ -1,5 +1,6 @@
 package com.example.checkout.order.application;
 
+import com.example.checkout.order.domain.OrderStatus;
 import com.example.checkout.order.application.dto.ProcessPaymentInput;
 import com.example.checkout.order.domain.OrderRepository;
 import com.example.checkout.order.infrastructure.gateway.PaymentProcessor;
@@ -27,7 +28,7 @@ public class ProcessPayment {
         // Duplicate delivery of the same payment: the order was already handled, so leave it untouched.
         if (result.status().equals("ALREADY_PROCESSED")) return;
 
-        var newStatus = result.status().equals("SUCCESS") ? "PAID" : "CANCEL";
+        var newStatus = result.status().equals("SUCCESS") ? OrderStatus.PAID : OrderStatus.CANCEL;
 
         order.changeStatus(newStatus);
 
