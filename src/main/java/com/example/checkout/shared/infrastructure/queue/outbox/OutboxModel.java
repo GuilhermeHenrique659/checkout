@@ -19,7 +19,8 @@ public class OutboxModel {
     private String payload;
 
     @Column
-    private String ack;
+    @Enumerated(EnumType.STRING)
+    private OutboxStatus ack;
 
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
@@ -27,10 +28,16 @@ public class OutboxModel {
     @Column
     private Instant processedAt;
 
+    @Column(nullable = false)
+    private int attempts = 0;
+
+    @Column
+    private Instant nextAttemptAt;
+
     protected OutboxModel() {
     }
 
-    public OutboxModel(UUID id, String eventType, String payload, String ack, Instant createdAt, Instant processedAt) {
+    public OutboxModel(UUID id, String eventType, String payload, OutboxStatus ack, Instant createdAt, Instant processedAt) {
         this.id = id;
         this.eventType = eventType;
         this.payload = payload;
@@ -71,11 +78,11 @@ public class OutboxModel {
         this.payload = payload;
     }
 
-    public String getAck() {
+    public OutboxStatus getAck() {
         return ack;
     }
 
-    public void setAck(String ack) {
+    public void setAck(OutboxStatus ack) {
         this.ack = ack;
     }
 
@@ -85,5 +92,21 @@ public class OutboxModel {
 
     public void setProcessedAt(Instant processedAt) {
         this.processedAt = processedAt;
+    }
+
+    public int getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(int attempts) {
+        this.attempts = attempts;
+    }
+
+    public Instant getNextAttemptAt() {
+        return nextAttemptAt;
+    }
+
+    public void setNextAttemptAt(Instant nextAttemptAt) {
+        this.nextAttemptAt = nextAttemptAt;
     }
 }
