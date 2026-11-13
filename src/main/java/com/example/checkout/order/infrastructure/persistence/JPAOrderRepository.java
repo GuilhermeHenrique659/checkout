@@ -8,14 +8,9 @@ import com.example.checkout.order.domain.OrderHistory;
 import com.example.checkout.order.domain.OrderTimeline;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Repository
 public class JPAOrderRepository implements OrderRepository {
@@ -77,33 +72,14 @@ public class JPAOrderRepository implements OrderRepository {
     }
 
     private List<OrderHistory> loadStatusHistory(UUID orderId) {
-        var models = orderHistoryDao.findAllByOrderId(orderId);
-        Map<UUID, OrderHistoryModel> byId = models.stream()
-                .collect(Collectors.toMap(OrderHistoryModel::getId, Function.identity()));
-
-        var pointedTo = models.stream()
-                .map(OrderHistoryModel::getNextId)
-                .filter(java.util.Objects::nonNull)
-                .collect(Collectors.toSet());
-
-        var head = models.stream()
-                .filter(m -> !pointedTo.contains(m.getId()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Order " + orderId + " has no status history head"));
-
-        var history = new ArrayList<OrderHistory>();
-        var visited = new HashSet<UUID>();
-        for (var current = head; current != null; current = current.getNextId() == null ? null : byId.get(current.getNextId())) {
-            if (!visited.add(current.getId())) {
-                throw new IllegalStateException("Order " + orderId + " has a cyclic status history");
-            }
-            history.add(new OrderHistory(
-                    current.getId(),
-                    OrderStatus.valueOf(current.getStatus()),
-                    current.getOccurredAt(),
-                    current.getNextId()
-            ));
-        }
-        return history;
+        return OrderHistoryChain.follow(orderId, orderHistoryDao.findAllByOrderId(orderId))
+                .stream()
+                .map(model -> new OrderHistory(
+                        model.getId(),
+                        OrderStatus.valueOf(model.getStatus()),
+                        model.getOccurredAt(),
+                        model.getNextId()
+                ))
+                .toList();
     }
 }
