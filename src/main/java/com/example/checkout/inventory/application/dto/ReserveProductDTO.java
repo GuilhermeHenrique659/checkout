@@ -7,9 +7,9 @@ public record ReserveProductDTO() {
     public record ProductItem(UUID productId, Integer quantity) {
     }
 
-    public record Input(List<ProductItem> productItems) {
+    public record Input(UUID referenceId, List<ProductItem> productItems) {
     }
 
-    public record Output(List<ProductItem> productItems) {
+    public record Output(UUID reservationId, List<ProductItem> productItems) {
     }
 }

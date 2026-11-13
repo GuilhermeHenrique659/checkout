@@ -19,6 +19,7 @@ public class InventoryService implements OrderInventoryService {
     @Override
     public List<ReserveItemInventoryServiceDTO.Output> reserveItems(ReserveItemInventoryServiceDTO.Input items) {
         var output = reserveProduct.execute(new ReserveProductDTO.Input(
+                items.orderId(),
                 items.items().stream().map(item -> new ReserveProductDTO.ProductItem(item.itemId(), item.quantity())).toList()
         ));
 
