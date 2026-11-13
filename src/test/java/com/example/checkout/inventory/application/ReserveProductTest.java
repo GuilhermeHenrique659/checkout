@@ -39,7 +39,7 @@ class ReserveProductTest {
                 )
         ));
 
-        var reservedProducts = unitRepository.getValuesByProductIdAndStatus(Map.of(product1Id, 2, product2Id, 2), UnitStatus.RESERVED);
+        var reservedProducts = unitRepository.getValuesByProductIdAndStatus(Map.of(product1Id, 10, product2Id, 10), UnitStatus.RESERVED);
         Assertions.assertEquals(4, reservedProducts.size());
     }
 
