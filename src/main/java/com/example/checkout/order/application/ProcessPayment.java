@@ -24,6 +24,9 @@ public class ProcessPayment {
 
         var result = payment.process(order.customerId(), order.id(), order.total());
 
+        // Duplicate delivery of the same payment: the order was already handled, so leave it untouched.
+        if (result.status().equals("ALREADY_PROCESSED")) return;
+
         var newStatus = result.status().equals("SUCCESS") ? "PAID" : "CANCEL";
 
         order.changeStatus(newStatus);

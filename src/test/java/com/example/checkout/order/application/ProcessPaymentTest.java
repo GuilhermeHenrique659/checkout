@@ -76,4 +76,24 @@ class ProcessPaymentTest {
         Assertions.assertEquals("CANCEL", orderProcessed.orElseThrow().status());
         Assertions.assertInstanceOf(OrderCanceled.class, fakePublisher.events().getFirst());
     }
+
+    @Test
+    void ShouldIgnoreAlreadyProcessedPayment() {
+        var items = List.of(new OrderItem(UUID.randomUUID(), 2, 1050));
+        var orderToProcess = Order.create(UUID.randomUUID(), items);
+        var paidOrder = new Order(orderToProcess.id(), orderToProcess.customerId(), orderToProcess.items(), "PAID", orderToProcess.total());
+
+        var orderRepo = new FakeOrderRepository(List.of(paidOrder));
+        var fakePublisher = new FakePublisher();
+        var processPayment = new ProcessPayment(
+                orderRepo,
+                (customerId, orderId, total) -> new PaymentProcessResult("ALREADY_PROCESSED"),
+                fakePublisher
+        );
+
+        processPayment.execute(new ProcessPaymentInput(paidOrder.id()));
+
+        Assertions.assertEquals("PAID", orderRepo.getById(paidOrder.id()).orElseThrow().status());
+        Assertions.assertTrue(fakePublisher.events().isEmpty());
+    }
 }
