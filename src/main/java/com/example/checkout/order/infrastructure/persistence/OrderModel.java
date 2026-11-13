@@ -14,9 +14,6 @@ public class OrderModel {
     private UUID id;
 
     @Column
-    private String status;
-
-    @Column
     private UUID customerId;
 
     @Column
@@ -25,9 +22,8 @@ public class OrderModel {
     protected OrderModel() {
     }
 
-    public OrderModel(UUID id, String status, UUID customerId, Integer total) {
+    public OrderModel(UUID id, UUID customerId, Integer total) {
         this.id = id;
-        this.status = status;
         this.customerId = customerId;
         this.total = total;
     }
@@ -38,14 +34,6 @@ public class OrderModel {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public UUID getCustomerId() {

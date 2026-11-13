@@ -1,5 +1,8 @@
 package com.example.checkout.order.application;
 
+import com.example.checkout.order.domain.OrderHistory;
+import com.example.checkout.order.domain.OrderTimeline;
+import java.time.Instant;
 import com.example.checkout.order.domain.OrderStatus;
 import com.example.checkout.order.application.dto.ProcessPaymentInput;
 import com.example.checkout.order.domain.Order;
@@ -82,7 +85,7 @@ class ProcessPaymentTest {
     void ShouldIgnoreAlreadyProcessedPayment() {
         var items = List.of(new OrderItem(UUID.randomUUID(), 2, 1050));
         var orderToProcess = Order.create(UUID.randomUUID(), items);
-        var paidOrder = new Order(orderToProcess.id(), orderToProcess.customerId(), orderToProcess.items(), OrderStatus.PAID, orderToProcess.total());
+        var paidOrder = new Order(orderToProcess.id(), orderToProcess.customerId(), orderToProcess.items(), new OrderTimeline(List.of(new OrderHistory(UUID.randomUUID(), OrderStatus.PAID, Instant.now(), null))), orderToProcess.total());
 
         var orderRepo = new FakeOrderRepository(List.of(paidOrder));
         var fakePublisher = new FakePublisher();
