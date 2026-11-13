@@ -8,11 +8,16 @@ import com.example.checkout.inventory.domain.Unit;
 import com.example.checkout.inventory.domain.UnitRepository;
 import com.example.checkout.shared.domain.ApplicationError;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.example.checkout.shared.domain.DomainError;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Service
+// Runs inside ReserveOrderItem's transaction. A business error here is caught there and turned into a cancel,
+// so it must not mark the shared transaction rollback-only (that would make the cancel fail at commit).
+@Transactional(noRollbackFor = {ApplicationError.class, DomainError.class})
 public class ReserveProduct {
     private final UnitRepository unitRepository;
     private final ReservationRepository reservationRepository;

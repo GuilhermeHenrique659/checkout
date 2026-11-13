@@ -3,6 +3,7 @@ package com.example.checkout.order.application;
 import com.example.checkout.order.application.dto.GetOrderDTO;
 import com.example.checkout.order.infrastructure.persistence.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class GetOrder {
     private final OrderDao orderDao;
     private final OrderHistoryDao orderHistoryDao;

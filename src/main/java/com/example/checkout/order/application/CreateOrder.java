@@ -6,12 +6,14 @@ import com.example.checkout.order.domain.event.OrderCreated;
 import com.example.checkout.shared.domain.ApplicationError;
 import com.example.checkout.shared.infrastructure.queue.Publisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
 @Service
+@Transactional
 public class CreateOrder {
 
     private final Publisher publisher;

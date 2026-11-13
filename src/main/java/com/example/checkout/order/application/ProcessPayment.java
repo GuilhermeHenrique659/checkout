@@ -7,8 +7,10 @@ import com.example.checkout.order.infrastructure.gateway.PaymentProcessor;
 import com.example.checkout.shared.domain.ApplicationError;
 import com.example.checkout.shared.infrastructure.queue.Publisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class ProcessPayment {
     private final OrderRepository orderRepo;
     private final PaymentProcessor payment;

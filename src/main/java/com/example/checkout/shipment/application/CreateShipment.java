@@ -7,8 +7,10 @@ import com.example.checkout.shipment.domain.Shipment;
 import com.example.checkout.shipment.domain.ShipmentRepository;
 import com.example.checkout.shipment.infrastructure.gateway.RoutePlanner;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class CreateShipment {
     private final ShipmentRepository shipmentRepository;
     private final RouteRepository routeRepository;
