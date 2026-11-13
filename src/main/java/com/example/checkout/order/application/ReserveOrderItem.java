@@ -28,8 +28,6 @@ public class ReserveOrderItem {
         var order = orderRepo.getById(input.orderId())
                 .orElseThrow(() -> new ApplicationError("ORDER_NOT_FOUND", "Order Not Found"));
 
-        order.changeStatus(OrderStatus.PREPARED);
-
         var itemsToReserve = order.items().stream()
                 .map(item -> new ReserveItemInventoryServiceDTO.Input.Item(
                         item.id(),
@@ -43,6 +41,7 @@ public class ReserveOrderItem {
                     itemsToReserve
             ));
 
+            order.changeStatus(OrderStatus.PREPARED);
             orderRepo.save(order);
         } catch (RuntimeException e) {
             if (e instanceof ApplicationError || e instanceof DomainError) {
